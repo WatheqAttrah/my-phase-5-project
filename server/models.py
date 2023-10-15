@@ -50,30 +50,35 @@ class Review(db.Model, SerializerMixin):
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
-    serialize_rules = ('-reviews.user',)
+    serializ_rules = ('-reviews.user',)
+    serializ_rules = ('-password.user',)
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(), unique=True, nullable=False)
+    username = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String)
     admin = db.Column(db.String, default=False)
 
-    _password_hash = db.Column(db.String)
+    password_id = db.Column(db.Integer, db.ForeignKey(
+        'passwords.id'), nullable=False)
 
     reviews = db.relationship('Review', backref='user')
+    password = db.relationship('Password', backref='user')
+
+    @hybrid_property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, plaintext_password):
+        self._password = bcrypt.generate_password_hash(
+            plaintext_password).decode('utf-8')
+
+    def authenticate(self, password):
+        return bcrypt.check_password_hash(self.password_hash, password)
 
     @hybrid_property
     def password_hash(self):
-        raise Exception('Password hashes may not be viewed.')
-
-    @password_hash.setter
-    def password_hash(self, password):
-        password_hash = bcrypt.generate_password_hash(
-            password.encode('utf-8'))
-        self._password_hash = password_hash.decode('utf-8')
-
-    def authenticate(self, password):
-        return bcrypt.check_password_hash(
-            self._password_hash, password.encode('utf-8'))
+        return Password.query.get(self.password_id)._password_hash
 
     @validates('email')
     def validate_email(self, key, address):
@@ -83,3 +88,13 @@ class User(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'User {self.username}, ID: {self.id}'
+
+# ===============#===============#===============#===============#
+
+class Password(db.Model, SerializerMixin):
+    __tablename__ = 'passwords'
+
+    serializer_rules = ('-user')
+
+    id = db.Column(db.Integer, primary_key=True)
+    _password_hash = db.Column(db.String, nullable=False)

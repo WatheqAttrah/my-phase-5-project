@@ -5,7 +5,7 @@ from flask_restful import Resource
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from config import app, db, api, bcrypt
-from models import User, Review, Car
+from models import Password, User, Review, Car
 
 
 # ============#============#============#============#============
@@ -29,6 +29,7 @@ class ClearSession(Resource):
 api.add_resource(ClearSession, '/clear', endpoint='clear')
 
 # ============#============#============#============#============
+
 # Check_Session
 
 
@@ -79,20 +80,30 @@ class Signup(Resource):
     def post(self):
 
         username = request.get_json()['username']
+        email = request.get_json()['email']
         password = request.get_json()['password']
 
-        if username and password:
-
-            new_user = User(username=username)
-            new_user.password_hash = password
-            db.session.add(new_user)
+        if len(username) < 10 and len(password) > 6:
+            # hash the input password, then add it in database
+            hashed_password = bcrypt.generate_password_hash(
+                password).decode('utf-8')
+            password_record = Password(_password_hash=hashed_password)
+            db.session.add(password_record)
             db.session.commit()
 
-            session['user_id'] = new_user.id
+            # Create a new user with the password foreign key
+            new_user = User(username=username, email=email,
+                            password_id=password_record.id)
+            try:
+                db.session.add(new_user)
+                db.session.commit()
+                session['user_id'] = new_user.id
+                return new_user.to_dict(), 201
 
-            return new_user.to_dict(), 201
-
-        return {'error': '422 Unprocessable Entity'}, 422
+            except IntegrityError as e:
+                db.session.rollback()
+                return {'errors': 'username already taken'}, 400
+        return {'errors' 'unproceessable entity'}, 422
 
 
 api.add_resource(Signup, '/signup', endpoint='signup')
@@ -149,13 +160,15 @@ class CarByID(Resource):
 api.add_resource(CarByID, '/cars/<int:id>')
 
 # ============#============#============#============#============
+
+
 class UserByUsername(Resource):
     def get(self, username):
         user = User.query.filter_by(username=username).first()
         if user:
             return user.to_dict(), 200
         return {'errors': 'user not found'}, 404
-    
+
     def delete(self, username):
         user = User.query.filter_by(username=username).first()
         active_user = User.query.filter_by(id=session.get('user_id')).first()
@@ -163,15 +176,15 @@ class UserByUsername(Resource):
             if active_user.admin == True and user.id != active_user.id:
                 db.session.delete(user)
                 db.session.commit()
-                return {'message':'successfully deleted'}, 204
+                return {'message': 'successfully deleted'}, 204
             if active_user.id == user.id:
                 db.session.delete(user)
                 db.session.commit()
-                session.pop('user_id', default=None)            
-                return {'message':'successfully deleted'}, 204
-            return {'errors':'unauthorized'}, 401
+                session.pop('user_id', default=None)
+                return {'message': 'successfully deleted'}, 204
+            return {'errors': 'unauthorized'}, 401
         return {'errors': 'user not found'}, 404
-    
+
     def patch(self, username):
         active_user = User.query.filter_by(id=session.get('user_id')).first()
         user = User.query.filter_by(username=username).first()
@@ -182,8 +195,9 @@ class UserByUsername(Resource):
                 db.session.add(user)
                 db.session.commit()
                 return user.to_dict(), 200
-            return {'errors':'unauthorized'}, 401
-        return {'errors':'user not found'}, 404
+            return {'errors': 'unauthorized'}, 401
+        return {'errors': 'user not found'}, 404
+
 
 api.add_resource(UserByUsername, '/users/<string:username>')
 

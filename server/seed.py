@@ -6,7 +6,7 @@ import bcrypt
 from faker import Faker
 from faker_vehicle import VehicleProvider
 from app import app
-from models import db, User, Review, Car
+from models import db, User, Review, Car, Password
 import string
 import random
 
@@ -34,16 +34,20 @@ if __name__ == '__main__':
         Car.query.delete()
 
         users = []
-        print('~~~~~~Seeding Fake Users~~~~~~')
-        for _ in range(5):
-            user = User(
-                username=fake.name(),
-                email=fake.email(),
-            )
-            user.password_hash = f'{user.username}password'
-            users.append(user)
+        for _ in range(10):
+            # Create a Password instance for each user
+            password = Password(_password_hash=fake.password())
+            db.session.add(password)
+            db.session.commit()
 
+            user = User(username=fake.user_name(),
+                        email=fake.email(),
+                        admin=0,
+                        password_id=password.id
+                        )
+            users.append(user)
         db.session.add_all(users)
+
 
         cars = []
         print('~~~~~~Seeding Fake Cars~~~~~~')

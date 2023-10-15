@@ -4,10 +4,10 @@ body {
 }
 
 .card {
-  border: 1px solid #ccc;
+  border: 1px solid #e7bebe;
   padding: 20px;
   margin: 10px;
-  background-color: rgb(116, 156, 230);
+  background-color: rgb(47, 107, 219);
   border-radius: 20px;
   box-shadow: O 2px 4px rgba(0, 0, 0, 0.1);
   display: inline-block;
@@ -16,14 +16,14 @@ body {
 
 .card button {
   padding: 10px;
-  background-color: #290a72;
+  background-color: #e69b39;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 .button:hover {
-  background-color: #d7d6cc;
+  background-color: #388dc5;
 }
 
 .card button:hover {
