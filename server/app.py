@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flask import jsonify, make_response, render_template, session, request
+from flask import jsonify, make_response, session, request, render_template
 from sqlalchemy.ext.associationproxy import association_proxy
 from flask_restful import Resource
 from sqlalchemy import func
@@ -13,8 +13,9 @@ from models import Password, User, Review, Car
 
 
 @app.route('/')
-def index():
-    return "Project Server"
+@app.route('/<int:id>')
+def index(id=0):
+    return render_template("index.html")
 
 # ClearSession
 
@@ -54,10 +55,10 @@ class Login(Resource):
         user = User.query.filter(User.username == username).first()
 
         if user and user.authenticate(password):
-            # Successful authentication
+
             session['user_id'] = user.id
             return user.to_dict(), 200
-        # Authentication failed
+
         return {'error': '401 Unauthorized'}, 401
 
 
@@ -84,14 +85,13 @@ class Signup(Resource):
         password = request.get_json()['password']
 
         if len(username) < 10 and len(password) > 6:
-            # hash the input password, then add it in database
+
             hashed_password = bcrypt.generate_password_hash(
                 password).decode('utf-8')
             password_record = Password(_password_hash=hashed_password)
             db.session.add(password_record)
             db.session.commit()
 
-            # Create a new user with the password foreign key
             new_user = User(username=username, email=email,
                             password_id=password_record.id)
             try:
