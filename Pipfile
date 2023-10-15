@@ -11,6 +11,13 @@ sqlalchemy-serializer = "*"
 flask-restful = "*"
 faker = "*"
 flask-cors = "*"
+gunicorn = "*"
+requests = "*"
+honcho = "*"
+flask-marshmallow = "*"
+response = "*"
+faker-vehicle = "*"
+bcrypt = "*"
 
 [dev-packages]
 
