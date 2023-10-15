@@ -1,58 +1,27 @@
 # My Phase 5 Project 
 
-# phase-5-project
+- Welcome to my Phase 5 Project for Flatiron, a fullstack web app built with React, Flask, and SQLAlchemy. Create a user account,adding reviews to list of cars.
 
-## Creating Your Own Git Repo
-- New Repo in Github.
-- Clone & Copy the SSH Key
+- Without being logged in, you can view all cars and the review but cannot interact with them. Each review is linked to its user via their username.
+
 
 ## Local Machine 
 - Select the directory intended to clone the repo in.
 - Open the Terminal  
-- Run command `git@github.com:WatheqAttrah/phase-5-project.git`
+- Run command `git@github.com:WatheqAttrah/my-phase-5-project.git`
 
-## Backend Setup 
-================
+## Run the following commands after 
+- Bachend server side port 5555
+    - Run: pipenv shell 
+    - Run: cd server 
+    - Run: python app.py 
 
-## `server/` directory contains all the backend code.
-### Install Python Virtual Environment Tool 
-- Run command `pipenv install`
-- Enter the shell with `pipenv shell`
+- Frontend client side  port 4000
+    - Run: cd client 
+    - Run: npm start
 
-
-### Packages Installed 
-- [Resources](https://pypi.org/)
-- Run the following command before each package 
-    - `pipenv install [Package]`
-
-- `flask-sqlalchemy`
-    - provide ways to interact with several database.
-- `flask-migrate` = "*"
-    - Handles SQLAlchemy database migrations.
-- `sqlalchemy-serializer`
-    - SQLAlchemy model to become serializable.
-- `flask-restful`
-    - Adds support for handling REST APIs in Python.
-- `flask-cors`
-    - Enables communications with resources in many domains
-- `flask-marshmallow`
-    - adds additional features to marshmallow, including URL and Hyperlinks fields for HATEOAS-ready APIs.
-- `faker` 
-    - To generate Fake data
-- `faker-vehicle`
-    - Provides vehicle and machinery related fake data for testing purposes.
-- `faker-sqlalchemy`
-    - Provider for the Faker library that helps populate SQLAlchemy ORM models.
-- `gunicorn`
-    - Python Web Server Gateway Interface (WSGI) HTTP serve
-- `bcrypt-flask`
-    - hashing function for password
-- `flask`
-    - Flask is a lightweight WSGI web application framework
-- `psycopg-binary`
-    - create and destroy lots of cursors and create a large number of “INSERTs” or “UPDATEs” 
-- `requests`
-    - Using requests, you can get, post, delete, update the data for the URL given.
+## Run Backend & Frontend symolteniously 
+    - honcho start -f Proc.dev
 
 ## Create Backend files
 -  Test Python Environment test=Pass
@@ -66,8 +35,8 @@
         - bcrypt
 
 - app.py
-    - Routes to the API's [ '/' Home | Checksession , Login , Signup, Signout, Clearsession, CarByID ], 
-    - HTTP GET | POST | Delete
+    - Routes to the API's [ '/' Home | Checksession , Login , Signup, Signout, Clearsession, CarByID, UserByID GET | DELETE | PATCH ], 
+  
 
 
 - models.py
