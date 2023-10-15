@@ -1,4 +1,50 @@
 body {
+  background: rgb(128, 204, 128);
+  font-family: "Playfair Display", serif;
+}
+
+.card {
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin: 10px;
+  background-color: cornflowerblue;
+  border-radius: 20px;
+  box-shadow: O 2px 4px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  margin: 10px;
+}
+
+.card button {
+  padding: 10px;
+  background-color: #290a72;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.card button:hover {
+  background-color: #5b17da;
+}
+
+.card h4 {
+  margin-top: 15px;
+}
+
+.card li {
+  margin-bottom: 6px;
+}
+
+.card p.no-reviews {
+  font-style: italic;
+  margin-top: 10px;
+}
+
+.highlighted-card {
+  background-color: #eeea08; 
+}
+
+/* body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -10,4 +56,4 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
+} */
