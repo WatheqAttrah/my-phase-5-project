@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import AddReview from './AddReview'
 import '../index.css'
 
-function CarCard( {make, model, year, price, id, user , vin , miles} ) {
+function CarCard( {make, model, year, price, id, user , vin , miles , engine, } ) {
   const [reviews, setReviews] = useState([]);
   const [showReviews, setShowReviews] = useState(false)
 
@@ -33,10 +33,10 @@ function CarCard( {make, model, year, price, id, user , vin , miles} ) {
     <div className={cardClassName}>
       <p>Make: <b>{make}</b></p>
       <p>Model: <b>{model}</b></p>
-      <p>Price: <b>{price}</b></p>
       <p>VIN: <b>{vin}</b></p>
       <p>Miles: <b>{miles}</b></p>
       <p>Year: <b>{year}</b></p>
+      <p>engine: <b>{engine}</b></p>
       <p>Price: <b>{price}</b></p>
       
       <button onClick={toggleReviews}>{showReviews ? 'Hide Reviews' : 'Show Reviews'}</button>

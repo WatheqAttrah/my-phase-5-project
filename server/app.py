@@ -148,6 +148,44 @@ class CarByID(Resource):
 
 api.add_resource(CarByID, '/cars/<int:id>')
 
+# ============#============#============#============#============
+class UserByUsername(Resource):
+    def get(self, username):
+        user = User.query.filter_by(username=username).first()
+        if user:
+            return user.to_dict(), 200
+        return {'errors': 'user not found'}, 404
+    
+    def delete(self, username):
+        user = User.query.filter_by(username=username).first()
+        active_user = User.query.filter_by(id=session.get('user_id')).first()
+        if active_user and user:
+            if active_user.admin == True and user.id != active_user.id:
+                db.session.delete(user)
+                db.session.commit()
+                return {'message':'successfully deleted'}, 204
+            if active_user.id == user.id:
+                db.session.delete(user)
+                db.session.commit()
+                session.pop('user_id', default=None)            
+                return {'message':'successfully deleted'}, 204
+            return {'errors':'unauthorized'}, 401
+        return {'errors': 'user not found'}, 404
+    
+    def patch(self, username):
+        active_user = User.query.filter_by(id=session.get('user_id')).first()
+        user = User.query.filter_by(username=username).first()
+        if user and active_user:
+            if user.id == active_user.id:
+                new_password = request.get_json()['password']
+                user.password = new_password
+                db.session.add(user)
+                db.session.commit()
+                return user.to_dict(), 200
+            return {'errors':'unauthorized'}, 401
+        return {'errors':'user not found'}, 404
+
+api.add_resource(UserByUsername, '/users/<string:username>')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

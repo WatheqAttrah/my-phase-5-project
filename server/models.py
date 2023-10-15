@@ -3,7 +3,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from config import db, bcrypt
 from sqlalchemy.orm import validates
 
-# ===============#===============#===============#===============#===============#===============#===============
+# ===============#===============#===============#===============#
 
 
 class Car(db.Model, SerializerMixin):
@@ -26,7 +26,7 @@ class Car(db.Model, SerializerMixin):
     def __repr__(self):
         return f'<Car Id: {self.id}, Make: {self.make}, Model: {self.model}, Year: {self.year},Price: {self.price},VIN: {self.vin},Engine: {self.engine},Image: {self.image}>'
 
-# ===============#===============#===============#===============#===============#===============#===============
+# ===============#===============#===============#===============#
 
 
 class Review(db.Model, SerializerMixin):
@@ -44,8 +44,7 @@ class Review(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'<Review Id: {self.id},  {self.review}>'
-
-# ===============#===============#===============#===============#===============#===============#===============
+# ===============#===============#===============#===============#
 
 
 class User(db.Model, SerializerMixin):
@@ -76,7 +75,6 @@ class User(db.Model, SerializerMixin):
         return bcrypt.check_password_hash(
             self._password_hash, password.encode('utf-8'))
 
-    # email validatiom
     @validates('email')
     def validate_email(self, key, address):
         if '@' not in address:

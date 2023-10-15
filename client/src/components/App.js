@@ -22,7 +22,7 @@ function App() {
 
   return (
     <>
-      <NavBar user={user} setUser={setUser} />
+      <NavBar activeclassname="active" user={user} setUser={setUser} />
       <main>
         {user ? (   
           <Switch>
